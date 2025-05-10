@@ -1,0 +1,2788 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "$$hashKey": "object:75",
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": 86,
+  "iteration": 1701657950869,
+  "links": [
+    {
+      "icon": "dashboard",
+      "tags": [],
+      "title": "TeslaMate",
+      "tooltip": "",
+      "type": "link",
+      "url": "[[base_url:raw]]"
+    },
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [
+        "teslaCustom"
+      ],
+      "targetBlank": false,
+      "title": "Extended dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    },
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "tags": [
+        "tesla"
+      ],
+      "title": "Dashboards",
+      "type": "dashboards"
+    }
+  ],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "noValue": "0 kWh",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "light-orange",
+                "value": null
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 7,
+        "x": 0,
+        "y": 0
+      },
+      "id": 10,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ]
+        },
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n\tsum(charge_energy_added)\nFROM\n\tcharging_processes\nWHERE\n\t$__timeFilter(end_date)\n\tAND car_id = $car_id;\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "efficiency"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cars",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Charged in total",
+      "type": "stat"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "hidden",
+            "axisSoftMin": 0,
+            "fillOpacity": 80,
+            "gradientMode": "hue",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AC"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#73BF69",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DC"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#FADE2A",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 7,
+        "y": 0
+      },
+      "id": 46,
+      "links": [],
+      "maxDataPoints": 3,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "groupWidth": 1,
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "list",
+          "placement": "right"
+        },
+        "orientation": "horizontal",
+        "showValue": "always",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "8.5.6",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "WITH data AS (\n  SELECT\n\t\tcp.id,\n\t\tcp.charge_energy_added,\n\t\tCASE WHEN NULLIF(mode() within group (order by charger_phases),0) is null THEN 'DC'\n\t\t\t\t ELSE 'AC'\n\t\tEND AS current\n\tFROM charging_processes cp\n  RIGHT JOIN charges ON cp.id = charges.charging_process_id\n  WHERE\n\t  cp.car_id = $car_id\n\t  AND cp.charge_energy_added > 0.01\n\t  AND $__timeFilter(end_date)\n  GROUP BY 1,2\n)\nSELECT\n\tnow() AS time,\n\tsum(charge_energy_added) AS value,\n\tcurrent AS metric\nFROM data\nGROUP BY 3\nORDER BY metric DESC;",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "addresses",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "AC/DC – Energy added",
+      "type": "barchart"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 2,
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 15,
+        "y": 0
+      },
+      "id": 27,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ]
+        },
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n\tsum(cost)\nFROM\n\tcharging_processes\nWHERE\n\t$__timeFilter(end_date)\n\tAND car_id = $car_id;",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "addresses",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Total charging cost",
+      "type": "stat"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 2,
+          "displayName": "",
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "super-light-orange",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 18,
+        "y": 0
+      },
+      "id": 52,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT (\n  SELECT sum(cost)\n  FROM charging_processes\n  WHERE $__timeFilter(end_date) AND car_id = $car_id\n) / (\n\tSELECT convert_km((max(odometer) - min(odometer))::numeric, '$length_unit')\n\tFROM positions\n\tWHERE $__timeFilter(date) AND car_id = $car_id\n) * 100",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "efficiency"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cars",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Cost per 100 $length_unit",
+      "type": "stat"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "super-light-yellow",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 21,
+        "y": 0
+      },
+      "id": 54,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT (\n  SELECT sum(cost)\n  FROM charging_processes\n  WHERE $__timeFilter(end_date) AND car_id = $car_id\n) / (\n  SELECT sum(greatest(charge_energy_added, charge_energy_used))\n  FROM charging_processes\n  WHERE $__timeFilter(end_date) AND car_id = $car_id\n)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "drives",
+          "timeColumn": "start_date",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Average cost per kWh",
+      "type": "stat"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "noValue": "0 kWh",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 7,
+        "x": 0,
+        "y": 3
+      },
+      "id": 33,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ]
+        },
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n\tsum(charge_energy_added)\nFROM\n\tcharging_processes\nWHERE\n\t$__timeFilter(end_date)\n\tAND car_id = $car_id\n\tAND cost = 0;\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "efficiency"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cars",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Free charged in total",
+      "type": "stat"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 2,
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#c7d0d9",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 15,
+        "y": 3
+      },
+      "id": 14,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ]
+        },
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "WITH data AS (\n\tSELECT c.charging_process_id \n\tFROM charges c\n\tLEFT JOIN charging_processes cp ON cp.id = c.charging_process_id\n\tLEFT JOIN addresses addr ON addr.id = cp.address_id\n\tLEFT JOIN geofences geo ON geo.id = geofence_id\n\tWHERE \n\t\tc.fast_charger_present IS true\n\t\tAND c.charger_voltage = 2\n\t\tAND cp.car_id = $car_id\n\t\tAND (addr.display_name LIKE '%Supercharger%' OR geo.name LIKE '%Supercharger%')\n\tGROUP BY 1\n)\nSELECT\n\tsum(cp.cost) as total\nFROM\n\tcharging_processes cp, data\nWHERE\n  $__timeFilter(end_date)\n  AND cp.cost IS NOT NULL\n  AND cp.id IN (data.charging_process_id);",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "addresses",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Charging cost at SuC",
+      "type": "stat"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 2,
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#c7d0d9",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 18,
+        "y": 3
+      },
+      "id": 40,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ]
+        },
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "WITH data AS (\n\tSELECT c.charging_process_id \n\tFROM charges c\n\tLEFT JOIN charging_processes cp ON cp.id = c.charging_process_id\n\tLEFT JOIN addresses addr ON addr.id = cp.address_id\n\tLEFT JOIN geofences geo ON geo.id = geofence_id\n\tWHERE \n\t\tc.fast_charger_present IS true\n\t\tAND c.charger_voltage = 2\n\t\tAND cp.car_id = $car_id\n\t\tAND CASE \n\t\t\tWHEN (cp.geofence_id IS NOT NULL) THEN (addr.display_name NOT LIKE '%Supercharger%' AND geo.name NOT LIKE '%Supercharger%')\n\t\t\tELSE addr.display_name NOT LIKE '%Supercharger%'\n\t\tEND\n\tGROUP BY 1\n)\nSELECT\n\tsum(cp.cost) as total\nFROM\n\tcharging_processes cp, data\nWHERE\n  $__timeFilter(end_date)\n  AND cp.cost IS NOT NULL\n  AND cp.id IN (data.charging_process_id);",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "addresses",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Cost in other DC",
+      "type": "stat"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 2,
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#c7d0d9",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 21,
+        "y": 3
+      },
+      "id": 47,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ]
+        },
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "WITH data AS (\n\tSELECT c.charging_process_id \n\tFROM charges c\n\tLEFT JOIN charging_processes cp ON cp.id = c.charging_process_id\n\tWHERE \n\t\tc.fast_charger_present IS NOT true\n\t\tAND c.charger_voltage != 2\n\t\tAND cp.car_id = $car_id\n\tGROUP BY 1\n)\nSELECT\n\tsum(cp.cost) as total\nFROM\n\tcharging_processes cp, data\nWHERE\n  $__timeFilter(end_date)\n  AND cp.cost IS NOT NULL\n  AND cp.id IN (data.charging_process_id);",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "latitude"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "addresses",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "AC Charging Cost",
+      "type": "stat"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "location"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Location"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "charge_energy_added"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Charged"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              },
+              {
+                "id": "custom.align",
+                "value": "right"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cost"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": false
+              },
+              {
+                "id": "displayName",
+                "value": "Cost"
+              },
+              {
+                "id": "custom.width",
+                "value": 80
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "average_time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Avg. Time"
+              },
+              {
+                "id": "unit",
+                "value": "m"
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "average_energy"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Avg. Charged"
+              },
+              {
+                "id": "unit",
+                "value": "kwatth"
+              },
+              {
+                "id": "custom.width",
+                "value": 105
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total_recharges"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total recharges"
+              },
+              {
+                "id": "custom.width",
+                "value": 115
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 15,
+        "x": 0,
+        "y": 6
+      },
+      "id": 50,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n\tCOALESCE(geofence.name, CONCAT_WS(', ', COALESCE(address.name, nullif(CONCAT_WS(' ', address.road, address.house_number), '')), address.city)) AS location,\n\tCOUNT(*) AS total_recharges,\n\tCASE\n      WHEN SUM(charge_energy_added) < 1000 THEN SUM(charge_energy_added)::NUMERIC(4,0)::VARCHAR || ' kWh' \n      WHEN SUM(charge_energy_added) < 1000000 THEN (SUM(charge_energy_added) / 1000)::NUMERIC(9, 3)::VARCHAR || ' MWh' \n      WHEN SUM(charge_energy_added) >= 1000000 THEN (SUM(charge_energy_added) / 1000000)::NUMERIC(9, 3)::VARCHAR || ' GWh' \n  END as charge_energy_added,\n  AVG(charge_energy_added) as average_energy,\n  AVG(duration_min) as average_time,\n  SUM(cost) as cost\nFROM\n\tcharging_processes c\nLEFT JOIN addresses address ON c.address_id = address.id\nLEFT JOIN geofences geofence ON geofence_id = geofence.id\nWHERE\n\t$__timeFilter(end_date)\n\tAND car_id = $car_id\n\tAND (address.display_name ILIKE '%supercharger%' OR geofence.name ILIKE '%supercharger%')\nGROUP BY\n\t1\nORDER BY\n\tSUM(charge_energy_added) DESC\nLIMIT 10;",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Top recharges in SuperChargers",
+      "type": "table"
+    },
+    {
+      "datasource": "TeslaMate",
+      "gridPos": {
+        "h": 1,
+        "w": 9,
+        "x": 15,
+        "y": 6
+      },
+      "id": 62,
+      "options": {
+        "content": "",
+        "mode": "markdown"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  inserted_at AS \"time\",\n  efficiency\nFROM cars\nWHERE\n  $__timeFilter(inserted_at)\nORDER BY 1",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "efficiency"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cars",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "SuC stats",
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-red",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total_cost"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "average_cost"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Average"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 15,
+        "y": 7
+      },
+      "id": 60,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "text": {
+          "titleSize": 16,
+          "valueSize": 33
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  ('$suc_stats'::json -> 'totalCost')::text::float AS total_cost,\n  ('$suc_stats'::json -> 'averageCost')::text::float AS average_cost",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "efficiency"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cars",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Cost",
+      "type": "stat"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-blue",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total_energy"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total"
+              },
+              {
+                "id": "unit",
+                "value": "kwatth"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "average_energy"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Average"
+              },
+              {
+                "id": "unit",
+                "value": "kwatth"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 18,
+        "y": 7
+      },
+      "id": 57,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "text": {
+          "titleSize": 16,
+          "valueSize": 33
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  ('$suc_stats'::json -> 'totalEnergy')::text::float  as total_energy,\n  ('$suc_stats'::json -> 'averageEnergy')::text::float  as average_energy",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "efficiency"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cars",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Energy",
+      "type": "stat"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-green",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total_time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total"
+              },
+              {
+                "id": "unit",
+                "value": "m"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "average_time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Average"
+              },
+              {
+                "id": "unit",
+                "value": "m"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 21,
+        "y": 7
+      },
+      "id": 59,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "text": {
+          "titleSize": 16,
+          "valueSize": 33
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  ('$suc_stats'::json -> 'totalTime')::text::float  as total_time,\n  ('$suc_stats'::json -> 'averageTime')::text::float  as average_time",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "efficiency"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cars",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Time",
+      "type": "stat"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "location"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Location"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "charge_energy_added"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Charged"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              },
+              {
+                "id": "custom.align",
+                "value": "right"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cost"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": false
+              },
+              {
+                "id": "displayName",
+                "value": "Cost"
+              },
+              {
+                "id": "custom.width",
+                "value": 80
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "average_time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Avg. Time"
+              },
+              {
+                "id": "unit",
+                "value": "m"
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "average_energy"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Avg. Charged"
+              },
+              {
+                "id": "unit",
+                "value": "kwatth"
+              },
+              {
+                "id": "custom.width",
+                "value": 105
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total_recharges"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total recharges"
+              },
+              {
+                "id": "custom.width",
+                "value": 115
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 15,
+        "x": 0,
+        "y": 14
+      },
+      "id": 55,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n\tCOALESCE(geo.name, CONCAT_WS(', ', COALESCE(addr.name, nullif(CONCAT_WS(' ', addr.road, addr.house_number), '')), addr.city)) AS location,\n\tCOUNT(*) AS total_recharges,\n\tCASE\n      WHEN SUM(charge_energy_added) < 1000 THEN SUM(charge_energy_added)::NUMERIC(4,0)::VARCHAR || ' kWh' \n      WHEN SUM(charge_energy_added) < 1000000 THEN (SUM(charge_energy_added) / 1000)::NUMERIC(9, 3)::VARCHAR || ' MWh' \n      WHEN SUM(charge_energy_added) >= 1000000 THEN (SUM(charge_energy_added) / 1000000)::NUMERIC(9, 3)::VARCHAR || ' GWh' \n  END as charge_energy_added,\n  AVG(charge_energy_added) as average_energy,\n  AVG(duration_min) as average_time,\n  sum(cost) as cost\nFROM\n\tcharging_processes cp\nLEFT JOIN addresses addr ON cp.address_id = addr.id\nLEFT JOIN geofences geo ON cp.geofence_id = geo.id\nWHERE\n\tcp.id IN (\n\t\tSELECT c.charging_process_id \n\t  FROM charges c\n  \tLEFT JOIN charging_processes cp ON cp.id = c.charging_process_id\n  \tLEFT JOIN addresses addr ON addr.id = cp.address_id\n  \tLEFT JOIN geofences geo ON geo.id = geofence_id\n  \tWHERE \n  \t  $__timeFilter(cp.start_date)\n  \t\tAND c.fast_charger_present IS true\n  \t\tAND c.charger_voltage = 2\n  \t\tAND cp.car_id = $car_id\n  \t\tAND CASE \n  \t\t\tWHEN (cp.geofence_id IS NOT NULL) THEN (addr.display_name NOT ILIKE '%supercharger%' AND geo.name NOT ILIKE '%supercharger%')\n  \t\t\tELSE addr.display_name NOT ILIKE '%supercharger%'\n  \t\tEND\n  \tGROUP BY 1\n\t)\nGROUP BY\n\t1\nORDER BY\n\tSUM(charge_energy_added) DESC\nLIMIT 10;",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Top recharges in other DC stations",
+      "type": "table"
+    },
+    {
+      "datasource": "TeslaMate",
+      "gridPos": {
+        "h": 1,
+        "w": 9,
+        "x": 15,
+        "y": 14
+      },
+      "id": 63,
+      "options": {
+        "content": "",
+        "mode": "markdown"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  inserted_at AS \"time\",\n  efficiency\nFROM cars\nWHERE\n  $__timeFilter(inserted_at)\nORDER BY 1",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "efficiency"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cars",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Other DC stats",
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-red",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total_cost"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "average_cost"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Average"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 15,
+        "y": 15
+      },
+      "id": 64,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "text": {
+          "titleSize": 16,
+          "valueSize": 33
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  ('$dc_stats'::json -> 'totalCost')::text::float  as total_cost,\n  ('$dc_stats'::json -> 'averageCost')::text::float  as average_cost",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "efficiency"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cars",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Cost",
+      "type": "stat"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-blue",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total_energy"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total"
+              },
+              {
+                "id": "unit",
+                "value": "kwatth"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "average_energy"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Average"
+              },
+              {
+                "id": "unit",
+                "value": "kwatth"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 18,
+        "y": 15
+      },
+      "id": 65,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "text": {
+          "titleSize": 16,
+          "valueSize": 33
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  ('$dc_stats'::json -> 'totalEnergy')::text::float  as total_energy,\n  ('$dc_stats'::json -> 'averageEnergy')::text::float  as average_energy",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "efficiency"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cars",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Energy",
+      "type": "stat"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-green",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total_time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total"
+              },
+              {
+                "id": "unit",
+                "value": "m"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "average_time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Average"
+              },
+              {
+                "id": "unit",
+                "value": "m"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 21,
+        "y": 15
+      },
+      "id": 66,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "text": {
+          "titleSize": 16,
+          "valueSize": 33
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  ('$dc_stats'::json -> 'totalTime')::text::float  as total_time,\n  ('$dc_stats'::json -> 'averageTime')::text::float  as average_time",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "efficiency"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cars",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Time",
+      "type": "stat"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "location"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Location"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "charge_energy_added"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Charged"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              },
+              {
+                "id": "custom.align",
+                "value": "right"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cost"
+            },
+            "properties": [
+              {
+                "id": "custom.hidden",
+                "value": false
+              },
+              {
+                "id": "displayName",
+                "value": "Cost"
+              },
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total_recharges"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total recharges"
+              },
+              {
+                "id": "custom.width",
+                "value": 115
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 15,
+        "x": 0,
+        "y": 22
+      },
+      "id": 4,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n\tCOALESCE(geo.name, CONCAT_WS(', ', COALESCE(addr.name, nullif(CONCAT_WS(' ', addr.road, addr.house_number), '')), addr.city)) AS location,\n\tCOUNT(*) AS total_recharges,\n\tCASE\n      WHEN SUM(charge_energy_added) < 1000 THEN SUM(charge_energy_added)::NUMERIC(4,0)::VARCHAR || ' kWh' \n      WHEN SUM(charge_energy_added) < 1000000 THEN (SUM(charge_energy_added) / 1000)::NUMERIC(9, 3)::VARCHAR || ' MWh' \n      WHEN SUM(charge_energy_added) >= 1000000 THEN (SUM(charge_energy_added) / 1000000)::NUMERIC(9, 3)::VARCHAR || ' GWh' \n   END as charge_energy_added, sum(cost) as cost\nFROM\n\tcharging_processes cp\nLEFT JOIN addresses addr ON cp.address_id = addr.id\nLEFT JOIN geofences geo ON cp.geofence_id = geo.id\nWHERE\n\tcp.id IN (\n\t\tSELECT c.charging_process_id \n\t  FROM charges c\n  \tLEFT JOIN charging_processes cp ON cp.id = c.charging_process_id\n  \tLEFT JOIN addresses addr ON addr.id = cp.address_id\n  \tLEFT JOIN geofences geo ON geo.id = geofence_id\n  \tWHERE \n  \t  $__timeFilter(cp.end_date)\n  \t\tAND c.fast_charger_present IS NOT true\n  \t\tAND c.charger_voltage != 2\n  \t\tAND cp.car_id = $car_id\n  \tGROUP BY 1\n\t)\nGROUP BY\n\t1\nORDER BY\n\tSUM(charge_energy_added) DESC\nLIMIT 10;",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Top recharges in AC stations",
+      "type": "table"
+    },
+    {
+      "datasource": "TeslaMate",
+      "gridPos": {
+        "h": 1,
+        "w": 9,
+        "x": 15,
+        "y": 22
+      },
+      "id": 67,
+      "options": {
+        "content": "",
+        "mode": "markdown"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  inserted_at AS \"time\",\n  efficiency\nFROM cars\nWHERE\n  $__timeFilter(inserted_at)\nORDER BY 1",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "efficiency"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cars",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "AC stats",
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-red",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total_cost"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "average_cost"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Average"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 15,
+        "y": 23
+      },
+      "id": 68,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "text": {
+          "titleSize": 16,
+          "valueSize": 33
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  ('$ac_stats'::json -> 'totalCost')::text::float  as total_cost,\n  ('$ac_stats'::json -> 'averageCost')::text::float  as average_cost",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "efficiency"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cars",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Cost",
+      "type": "stat"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-blue",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total_energy"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total"
+              },
+              {
+                "id": "unit",
+                "value": "kwatth"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "average_energy"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Average"
+              },
+              {
+                "id": "unit",
+                "value": "kwatth"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 18,
+        "y": 23
+      },
+      "id": 69,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "text": {
+          "titleSize": 16,
+          "valueSize": 33
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  ('$ac_stats'::json -> 'totalEnergy')::text::float  as total_energy,\n  ('$ac_stats'::json -> 'averageEnergy')::text::float  as average_energy",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "efficiency"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cars",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Energy",
+      "type": "stat"
+    },
+    {
+      "datasource": "TeslaMate",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-green",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total_time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total"
+              },
+              {
+                "id": "unit",
+                "value": "m"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "average_time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Average"
+              },
+              {
+                "id": "unit",
+                "value": "m"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 21,
+        "y": 23
+      },
+      "id": 70,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "text": {
+          "titleSize": 16,
+          "valueSize": 33
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": "TeslaMate",
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  ('$ac_stats'::json -> 'totalTime')::text::float  as total_time,\n  ('$ac_stats'::json -> 'averageTime')::text::float  as average_time",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "efficiency"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cars",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Time",
+      "type": "stat"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": [
+    "tesla",
+    "le个人汉化"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "le",
+          "value": "1"
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "PC98BA2F4D77E1A42"
+        },
+        "definition": "SELECT name AS __text, id AS __value FROM cars ORDER BY display_priority ASC, name ASC;",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Car",
+        "multi": false,
+        "name": "car_id",
+        "options": [],
+        "query": "SELECT name AS __text, id AS __value FROM cars ORDER BY display_priority ASC, name ASC;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "http://diciky.cn:14000",
+          "value": "http://diciky.cn:14000"
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "PC98BA2F4D77E1A42"
+        },
+        "definition": "select base_url from settings limit 1;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "",
+        "multi": false,
+        "name": "base_url",
+        "options": [],
+        "query": "select base_url from settings limit 1;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "km",
+          "value": "km"
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "PC98BA2F4D77E1A42"
+        },
+        "definition": "select unit_of_length from settings limit 1;",
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "length_unit",
+        "options": [],
+        "query": "select unit_of_length from settings limit 1;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "{\n\t\t   \"totalEnergy\": 0, \n\t\t   \"averageEnergy\": 0, \n\t\t   \"totalTime\": 0, \n\t\t   \"averageTime\": 0, \n\t\t   \"totalCost\": 0, \n\t\t   \"averageCost\": 0\n\t\t   }",
+          "value": "{\n\t\t   \"totalEnergy\": 0, \n\t\t   \"averageEnergy\": 0, \n\t\t   \"totalTime\": 0, \n\t\t   \"averageTime\": 0, \n\t\t   \"totalCost\": 0, \n\t\t   \"averageCost\": 0\n\t\t   }"
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "PC98BA2F4D77E1A42"
+        },
+        "definition": "SELECT\n\tCONCAT('{\n\t\t   \"totalEnergy\": ', COALESCE(SUM(charge_energy_added), 0),', \n\t\t   \"averageEnergy\": ',COALESCE(AVG(charge_energy_added), 0),', \n\t\t   \"totalTime\": ',COALESCE(SUM(duration_min), 0),', \n\t\t   \"averageTime\": ',COALESCE(AVG(duration_min), 0),', \n\t\t   \"totalCost\": ',COALESCE(SUM(cost), 0),', \n\t\t   \"averageCost\": ',COALESCE(AVG(cost), 0),'\n\t\t   }')\nFROM\n\tcharging_processes c\nLEFT JOIN addresses address ON c.address_id = address.id\nLEFT JOIN geofences geofence ON geofence_id = geofence.id\nWHERE\n\t$__timeFilter(end_date)\n\tAND car_id = $car_id\n\tAND (address.display_name ILIKE '%supercharger%' OR geofence.name ILIKE '%supercharger%');",
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "suc_stats",
+        "options": [],
+        "query": "SELECT\n\tCONCAT('{\n\t\t   \"totalEnergy\": ', COALESCE(SUM(charge_energy_added), 0),', \n\t\t   \"averageEnergy\": ',COALESCE(AVG(charge_energy_added), 0),', \n\t\t   \"totalTime\": ',COALESCE(SUM(duration_min), 0),', \n\t\t   \"averageTime\": ',COALESCE(AVG(duration_min), 0),', \n\t\t   \"totalCost\": ',COALESCE(SUM(cost), 0),', \n\t\t   \"averageCost\": ',COALESCE(AVG(cost), 0),'\n\t\t   }')\nFROM\n\tcharging_processes c\nLEFT JOIN addresses address ON c.address_id = address.id\nLEFT JOIN geofences geofence ON geofence_id = geofence.id\nWHERE\n\t$__timeFilter(end_date)\n\tAND car_id = $car_id\n\tAND (address.display_name ILIKE '%supercharger%' OR geofence.name ILIKE '%supercharger%');",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "{\n\t\t   \"totalEnergy\": 746.37, \n\t\t   \"averageEnergy\": 28.7065384615384615, \n\t\t   \"totalTime\": 837, \n\t\t   \"averageTime\": 32.1923076923076923, \n\t\t   \"totalCost\": 763.40, \n\t\t   \"averageCost\": 33.1913043478260870\n\t\t   }",
+          "value": "{\n\t\t   \"totalEnergy\": 746.37, \n\t\t   \"averageEnergy\": 28.7065384615384615, \n\t\t   \"totalTime\": 837, \n\t\t   \"averageTime\": 32.1923076923076923, \n\t\t   \"totalCost\": 763.40, \n\t\t   \"averageCost\": 33.1913043478260870\n\t\t   }"
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "PC98BA2F4D77E1A42"
+        },
+        "definition": "SELECT\n\tCONCAT('{\n\t\t   \"totalEnergy\": ', COALESCE(SUM(charge_energy_added), 0),', \n\t\t   \"averageEnergy\": ',COALESCE(AVG(charge_energy_added), 0),', \n\t\t   \"totalTime\": ',COALESCE(SUM(duration_min), 0),', \n\t\t   \"averageTime\": ',COALESCE(AVG(duration_min), 0),', \n\t\t   \"totalCost\": ',COALESCE(SUM(cost), 0),', \n\t\t   \"averageCost\": ',COALESCE(AVG(cost), 0),'\n\t\t   }')\nFROM\n\tcharging_processes cp\nLEFT JOIN addresses addr ON cp.address_id = addr.id\nLEFT JOIN geofences geo ON cp.geofence_id = geo.id\nWHERE\n\tcp.id IN (\n\t\tSELECT c.charging_process_id \n\t  FROM charges c\n  \tLEFT JOIN charging_processes cp ON cp.id = c.charging_process_id\n  \tLEFT JOIN addresses addr ON addr.id = cp.address_id\n  \tLEFT JOIN geofences geo ON geo.id = geofence_id\n  \tWHERE \n  \t\t$__timeFilter(cp.start_date)\n  \t\tAND c.fast_charger_present IS true\n  \t\tAND c.charger_voltage = 2\n  \t\tAND cp.car_id = $car_id\n  \t\tAND CASE \n  \t\t\tWHEN (cp.geofence_id IS NOT NULL) THEN (addr.display_name NOT ILIKE '%supercharger%' AND geo.name NOT ILIKE '%supercharger%')\n  \t\t\tELSE addr.display_name NOT ILIKE '%supercharger%'\n  \t\tEND\n  \tGROUP BY 1\n\t);",
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "dc_stats",
+        "options": [],
+        "query": "SELECT\n\tCONCAT('{\n\t\t   \"totalEnergy\": ', COALESCE(SUM(charge_energy_added), 0),', \n\t\t   \"averageEnergy\": ',COALESCE(AVG(charge_energy_added), 0),', \n\t\t   \"totalTime\": ',COALESCE(SUM(duration_min), 0),', \n\t\t   \"averageTime\": ',COALESCE(AVG(duration_min), 0),', \n\t\t   \"totalCost\": ',COALESCE(SUM(cost), 0),', \n\t\t   \"averageCost\": ',COALESCE(AVG(cost), 0),'\n\t\t   }')\nFROM\n\tcharging_processes cp\nLEFT JOIN addresses addr ON cp.address_id = addr.id\nLEFT JOIN geofences geo ON cp.geofence_id = geo.id\nWHERE\n\tcp.id IN (\n\t\tSELECT c.charging_process_id \n\t  FROM charges c\n  \tLEFT JOIN charging_processes cp ON cp.id = c.charging_process_id\n  \tLEFT JOIN addresses addr ON addr.id = cp.address_id\n  \tLEFT JOIN geofences geo ON geo.id = geofence_id\n  \tWHERE \n  \t\t$__timeFilter(cp.start_date)\n  \t\tAND c.fast_charger_present IS true\n  \t\tAND c.charger_voltage = 2\n  \t\tAND cp.car_id = $car_id\n  \t\tAND CASE \n  \t\t\tWHEN (cp.geofence_id IS NOT NULL) THEN (addr.display_name NOT ILIKE '%supercharger%' AND geo.name NOT ILIKE '%supercharger%')\n  \t\t\tELSE addr.display_name NOT ILIKE '%supercharger%'\n  \t\tEND\n  \tGROUP BY 1\n\t);",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "{\n\t\t   \"totalEnergy\": 0, \n\t\t   \"averageEnergy\": 0, \n\t\t   \"totalTime\": 0, \n\t\t   \"averageTime\": 0, \n\t\t   \"totalCost\": 0, \n\t\t   \"averageCost\": 0\n\t\t   }",
+          "value": "{\n\t\t   \"totalEnergy\": 0, \n\t\t   \"averageEnergy\": 0, \n\t\t   \"totalTime\": 0, \n\t\t   \"averageTime\": 0, \n\t\t   \"totalCost\": 0, \n\t\t   \"averageCost\": 0\n\t\t   }"
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "PC98BA2F4D77E1A42"
+        },
+        "definition": "SELECT\n\tCONCAT('{\n\t\t   \"totalEnergy\": ', COALESCE(SUM(charge_energy_added), 0),', \n\t\t   \"averageEnergy\": ',COALESCE(AVG(charge_energy_added), 0),', \n\t\t   \"totalTime\": ',COALESCE(SUM(duration_min), 0),', \n\t\t   \"averageTime\": ',COALESCE(AVG(duration_min), 0),', \n\t\t   \"totalCost\": ',COALESCE(SUM(cost), 0),', \n\t\t   \"averageCost\": ',COALESCE(AVG(cost), 0),'\n\t\t   }')\nFROM\n\tcharging_processes cp\nLEFT JOIN addresses addr ON cp.address_id = addr.id\nLEFT JOIN geofences geo ON cp.geofence_id = geo.id\nWHERE\n\tcp.id IN (\n\t\tSELECT c.charging_process_id \n\t  FROM charges c\n  \tLEFT JOIN charging_processes cp ON cp.id = c.charging_process_id\n  \tLEFT JOIN addresses addr ON addr.id = cp.address_id\n  \tLEFT JOIN geofences geo ON geo.id = geofence_id\n  \tWHERE \n  \t  $__timeFilter(cp.end_date)\n  \t\tAND c.fast_charger_present IS NOT true\n  \t\tAND c.charger_voltage != 2\n  \t\tAND cp.car_id = $car_id\n  \tGROUP BY 1\n\t);",
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "ac_stats",
+        "options": [],
+        "query": "SELECT\n\tCONCAT('{\n\t\t   \"totalEnergy\": ', COALESCE(SUM(charge_energy_added), 0),', \n\t\t   \"averageEnergy\": ',COALESCE(AVG(charge_energy_added), 0),', \n\t\t   \"totalTime\": ',COALESCE(SUM(duration_min), 0),', \n\t\t   \"averageTime\": ',COALESCE(AVG(duration_min), 0),', \n\t\t   \"totalCost\": ',COALESCE(SUM(cost), 0),', \n\t\t   \"averageCost\": ',COALESCE(AVG(cost), 0),'\n\t\t   }')\nFROM\n\tcharging_processes cp\nLEFT JOIN addresses addr ON cp.address_id = addr.id\nLEFT JOIN geofences geo ON cp.geofence_id = geo.id\nWHERE\n\tcp.id IN (\n\t\tSELECT c.charging_process_id \n\t  FROM charges c\n  \tLEFT JOIN charging_processes cp ON cp.id = c.charging_process_id\n  \tLEFT JOIN addresses addr ON addr.id = cp.address_id\n  \tLEFT JOIN geofences geo ON geo.id = geofence_id\n  \tWHERE \n  \t  $__timeFilter(cp.end_date)\n  \t\tAND c.fast_charger_present IS NOT true\n  \t\tAND c.charger_voltage != 2\n  \t\tAND cp.car_id = $car_id\n  \tGROUP BY 1\n\t);",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-10y",
+    "to": "now"
+  },
+  "timepicker": {
+    "hidden": false,
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "Charging Tops",
+  "uid": "DdLe5uFVk",
+  "version": 2,
+  "weekStart": ""
+}

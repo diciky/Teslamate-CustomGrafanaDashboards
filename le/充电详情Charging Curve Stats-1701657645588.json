@@ -1,0 +1,859 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "$$hashKey": "object:75",
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": 65,
+  "iteration": 1701657641739,
+  "links": [
+    {
+      "icon": "dashboard",
+      "tags": [],
+      "title": "TeslaMate",
+      "tooltip": "",
+      "type": "link",
+      "url": "[[base_url:raw]]"
+    },
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "tags": [
+        "tesla"
+      ],
+      "title": "Dashboards",
+      "type": "dashboards"
+    },
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [
+        "le个人汉化"
+      ],
+      "targetBlank": false,
+      "title": "le个人汉化",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "TeslaMate"
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 29,
+      "links": [],
+      "pconfig": {
+        "fixScale": "",
+        "layout": {
+          "dragmode": "zoom",
+          "font": {
+            "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
+          },
+          "hovermode": "closest",
+          "legend": {
+            "orientation": "h"
+          },
+          "showlegend": false,
+          "xaxis": {
+            "rangemode": "normal",
+            "showgrid": true,
+            "title": "SOC [%]",
+            "type": "linear",
+            "zeroline": false
+          },
+          "yaxis": {
+            "rangemode": "tozero",
+            "showgrid": true,
+            "title": "kW",
+            "type": "linear",
+            "zeroline": true
+          },
+          "zaxis": {
+            "rangemode": "normal",
+            "showgrid": true,
+            "type": "linear",
+            "zeroline": false
+          }
+        },
+        "loadFromCDN": false,
+        "settings": {
+          "displayModeBar": false,
+          "type": "scatter"
+        },
+        "showAnnotations": true,
+        "traces": [
+          {
+            "mapping": {
+              "color": "charging_process_id",
+              "text": "Charge",
+              "x": "SOC [%]",
+              "y": "Power [kW]"
+            },
+            "name": "Charge Curve",
+            "settings": {
+              "color_option": "ramp",
+              "line": {
+                "color": "#005f81",
+                "dash": "solid",
+                "shape": "linear",
+                "width": 6
+              },
+              "marker": {
+                "color": "#33B5E5",
+                "colorscale": "Electric",
+                "line": {
+                  "color": "#DDD",
+                  "width": 0
+                },
+                "showscale": false,
+                "size": 3,
+                "sizemin": 3,
+                "sizemode": "diameter",
+                "sizeref": 0.2,
+                "symbol": "diamond"
+              }
+            },
+            "show": {
+              "line": true,
+              "lines": false,
+              "markers": true
+            }
+          },
+          {
+            "mapping": {
+              "color": "charging_process_id",
+              "x": "B - SOC [%]",
+              "y": "B - Avg Power [kW]"
+            },
+            "name": "Median Power",
+            "settings": {
+              "color_option": "solid",
+              "line": {
+                "color": "#FF7383",
+                "dash": "solid",
+                "shape": "linear",
+                "width": 2
+              },
+              "marker": {
+                "color": "#33B5E5",
+                "colorscale": "Reds",
+                "line": {
+                  "color": "#DDD",
+                  "width": 0
+                },
+                "showscale": false,
+                "size": 2,
+                "sizemin": 3,
+                "sizemode": "diameter",
+                "sizeref": 0.2,
+                "symbol": "circle"
+              }
+            },
+            "show": {
+              "line": true,
+              "lines": true,
+              "markers": false
+            }
+          }
+        ]
+      },
+      "pluginVersion": "7.5.11",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "postgres",
+            "uid": "TeslaMate"
+          },
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  c.battery_level as \"SOC [%]\",\r\n  round(avg(c.charger_power), 0) as \"Power [kW]\",\r\n  c.charging_process_id as \"charging_process_id\",\r\n  COALESCE(g.name, a.name) || ' ' || to_char(c.date, 'YYYY-MM-dd') as \"Charge\"\r\nFROM\r\n  charges c\r\nJOIN charging_processes p ON p.id = c.charging_process_id \r\nJOIN addresses a ON a.id = p.address_id\r\nLEFT JOIN geofences g ON g.id = p.geofence_id\r\nWHERE\r\n  $__timeFilter(date)\r\n AND p.car_id = $car_id\r\n AND c.battery_level >= $filter_soc_from AND c.battery_level <= $filter_soc_to\r\n AND charger_power >= $filter_power_from AND charger_power <= $filter_power_to\r\n AND c.fast_charger_present\r\n AND COALESCE(g.name, a.name) ILIKE '%supercharger%' \r\nGROUP BY c.battery_level, c.charging_process_id, a.name, g.name, to_char(c.date, 'YYYY-MM-dd')",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "TeslaMate"
+          },
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  c.battery_level as \"B - SOC [%]\",\n  PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY charger_power) as \"B - Avg Power [kW]\"\nFROM\n  charges c\nJOIN charging_processes p ON p.id = c.charging_process_id \nJOIN addresses a ON a.id = p.address_id\nLEFT JOIN geofences g ON g.id = p.geofence_id\nWHERE\n  $__timeFilter(date)\n AND p.car_id = $car_id\n AND c.battery_level >= $filter_soc_from AND c.battery_level <= $filter_soc_to\n AND charger_power >= $filter_power_from AND charger_power <= $filter_power_to\n AND c.fast_charger_present\n AND COALESCE(g.name, a.name) ILIKE '%supercharger%' \nGROUP BY battery_level",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "efficiency"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cars",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "超充曲线",
+      "type": "natel-plotly-panel",
+      "version": 1
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "TeslaMate"
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 32,
+      "links": [],
+      "pconfig": {
+        "fixScale": "",
+        "layout": {
+          "dragmode": "zoom",
+          "font": {
+            "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
+          },
+          "hovermode": "closest",
+          "legend": {
+            "orientation": "h"
+          },
+          "showlegend": false,
+          "xaxis": {
+            "rangemode": "normal",
+            "showgrid": true,
+            "title": "SOC [%]",
+            "type": "linear",
+            "zeroline": false
+          },
+          "yaxis": {
+            "rangemode": "tozero",
+            "showgrid": true,
+            "title": "kW",
+            "type": "linear",
+            "zeroline": true
+          },
+          "zaxis": {
+            "rangemode": "normal",
+            "showgrid": true,
+            "type": "linear",
+            "zeroline": false
+          }
+        },
+        "loadFromCDN": false,
+        "settings": {
+          "displayModeBar": false,
+          "type": "scatter"
+        },
+        "showAnnotations": true,
+        "traces": [
+          {
+            "mapping": {
+              "color": "charging_process_id",
+              "text": "Charge",
+              "x": "SOC [%]",
+              "y": "Power [kW]"
+            },
+            "name": "Charge Curve",
+            "settings": {
+              "color_option": "ramp",
+              "line": {
+                "color": "#005f81",
+                "dash": "solid",
+                "shape": "linear",
+                "width": 6
+              },
+              "marker": {
+                "color": "#33B5E5",
+                "colorscale": "Electric",
+                "line": {
+                  "color": "#DDD",
+                  "width": 0
+                },
+                "showscale": false,
+                "size": 3,
+                "sizemin": 3,
+                "sizemode": "diameter",
+                "sizeref": 0.2,
+                "symbol": "diamond"
+              }
+            },
+            "show": {
+              "line": true,
+              "lines": false,
+              "markers": true
+            }
+          },
+          {
+            "mapping": {
+              "color": "charging_process_id",
+              "x": "B - SOC [%]",
+              "y": "B - Avg Power [kW]"
+            },
+            "name": "Median Power",
+            "settings": {
+              "color_option": "solid",
+              "line": {
+                "color": "#FF7383",
+                "dash": "solid",
+                "shape": "linear",
+                "width": 2
+              },
+              "marker": {
+                "color": "#33B5E5",
+                "colorscale": "Reds",
+                "line": {
+                  "color": "#DDD",
+                  "width": 0
+                },
+                "showscale": false,
+                "size": 2,
+                "sizemin": 3,
+                "sizemode": "diameter",
+                "sizeref": 0.2,
+                "symbol": "circle"
+              }
+            },
+            "show": {
+              "line": true,
+              "lines": true,
+              "markers": false
+            }
+          }
+        ]
+      },
+      "pluginVersion": "7.5.11",
+      "targets": [
+        {
+          "alias": "",
+          "datasource": {
+            "type": "postgres",
+            "uid": "TeslaMate"
+          },
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  c.battery_level as \"SOC [%]\",\r\n  round(avg(c.charger_power), 0) as \"Power [kW]\",\r\n  c.charging_process_id as \"charging_process_id\",\r\n  COALESCE(g.name, a.name) || ' ' || to_char(c.date, 'YYYY-MM-dd') as \"Charge\"\r\nFROM\r\n  charges c\r\nJOIN charging_processes p ON p.id = c.charging_process_id \r\nJOIN addresses a ON a.id = p.address_id\r\nLEFT JOIN geofences g ON g.id = p.geofence_id\r\nWHERE\r\n  $__timeFilter(date)\r\n AND p.car_id = $car_id\r\n AND c.battery_level >= $filter_soc_from AND c.battery_level <= $filter_soc_to\r\n AND charger_power >= $filter_power_from AND charger_power <= $filter_power_to\r\n AND c.fast_charger_present\r\n AND COALESCE(g.name, a.name) NOT ILIKE '%supercharger%' \r\nGROUP BY c.battery_level, c.charging_process_id, a.name, g.name, to_char(c.date, 'YYYY-MM-dd')",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "TeslaMate"
+          },
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  c.battery_level as \"B - SOC [%]\",\n  PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY charger_power) as \"B - Avg Power [kW]\"\nFROM\n  charges c\nJOIN charging_processes p ON p.id = c.charging_process_id \nJOIN addresses a ON a.id = p.address_id\nLEFT JOIN geofences g ON g.id = p.geofence_id\nWHERE\n  $__timeFilter(date)\n AND p.car_id = $car_id\n AND c.battery_level >= $filter_soc_from AND c.battery_level <= $filter_soc_to\n AND charger_power >= $filter_power_from AND charger_power <= $filter_power_to\n AND c.fast_charger_present\n AND COALESCE(g.name, a.name) NOT ILIKE '%supercharger%' \nGROUP BY battery_level",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "efficiency"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cars",
+          "timeColumn": "inserted_at",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "三方快充曲线",
+      "type": "natel-plotly-panel",
+      "version": 1
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      },
+      "id": 40,
+      "panels": [],
+      "title": "快充记录",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "TeslaMate"
+      },
+      "description": "这个仪表盘旨在查看在特斯拉超级充电站或其他快速充电站上的充电曲线会话。此外，您可以查看在每种类型的充电站上完成的快速充电会话数量，以及会话中达到的最大功率（kW）的计数。这个仪表板提供的数据可以帮助电动汽车使用者更加了解其充电行为和习惯，以及充电设施的效率和性能表现，有助于提高电动汽车充电的效率和准确性.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 4,
+        "x": 0,
+        "y": 15
+      },
+      "id": 38,
+      "options": {
+        "displayLabels": [
+          "value",
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "TeslaMate"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "WITH charges_summary AS (\n    SELECT\n        cp.id,\n        COALESCE(geo.name, CONCAT_WS(', ', COALESCE(addr.name, nullif(CONCAT_WS(' ', addr.road, addr.house_number), '')), addr.city)) AS location,\n        COUNT(c.charging_process_id)\n    FROM\n        charging_processes cp\n    LEFT JOIN \n        addresses addr ON addr.id = address_id\n    LEFT JOIN\n        geofences geo ON geo.id = geofence_id\n    LEFT JOIN\n        charges c ON cp.id = c.charging_process_id\n    WHERE\n        $__timeFilter(date) AND\n        cp.car_id = $car_id AND cp.charge_energy_added > 0.01 AND c.fast_charger_present \n    GROUP BY 1, 2\n)\nSELECT \n    CASE\n        WHEN location ILIKE '%supercharger%' THEN 'Tesla Supercharger'\n        ELSE '三方快充' END AS location,\n    COUNT(location) AS n\nFROM charges_summary\nGROUP BY 1",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "start_km"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "drives",
+          "timeColumn": "start_date",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "TeslaMate"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-greens"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMin": 0,
+            "fillOpacity": 90,
+            "gradientMode": "scheme",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          },
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "super-light-green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "n"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Number of times"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Power [kW]"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kwatt"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 20,
+        "x": 4,
+        "y": 15
+      },
+      "id": 34,
+      "links": [],
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "groupWidth": 0,
+        "legend": {
+          "calcs": [],
+          "displayMode": "hidden",
+          "placement": "bottom"
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xField": "Power [kW]",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "8.5.15",
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "TeslaMate"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "WITH power_summary AS (\n    SELECT ROUND(MAX(charges.charger_power) / 5, 0) * 5 AS \"power\"\n    FROM charging_processes\n    LEFT JOIN charges ON charging_processes.id = charges.charging_process_id\n    WHERE $__timeFilter(date) AND charging_processes.car_id = $car_id AND charging_processes.charge_energy_added > 0.01 AND charges.fast_charger_present\n    GROUP BY charging_processes.id\n)\nSELECT power_summary.power AS \"Power [kW]\", COUNT(power_summary.power) AS n\nFROM power_summary\nWHERE power_summary.power >= $filter_power_from AND power_summary.power <= $filter_power_to\nGROUP BY 1\nORDER BY 1 DESC\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "最大功率",
+      "type": "barchart"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": [
+    "le个人汉化",
+    "tesla"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "le",
+          "value": "1"
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "TeslaMate"
+        },
+        "definition": "SELECT name AS __text, id AS __value FROM cars ORDER BY display_priority ASC, name ASC;",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Car",
+        "multi": false,
+        "name": "car_id",
+        "options": [],
+        "query": "SELECT name AS __text, id AS __value FROM cars ORDER BY display_priority ASC, name ASC;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "http://diciky.cn:14000",
+          "value": "http://diciky.cn:14000"
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "TeslaMate"
+        },
+        "definition": "select base_url from settings limit 1;",
+        "hide": 2,
+        "includeAll": false,
+        "label": "",
+        "multi": false,
+        "name": "base_url",
+        "options": [],
+        "query": "select base_url from settings limit 1;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "0",
+          "value": "0"
+        },
+        "hide": 0,
+        "label": "Power >=",
+        "name": "filter_power_from",
+        "options": [
+          {
+            "selected": true,
+            "text": "0",
+            "value": "0"
+          }
+        ],
+        "query": "0",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "260",
+          "value": "260"
+        },
+        "hide": 0,
+        "label": "Power <=",
+        "name": "filter_power_to",
+        "options": [
+          {
+            "selected": true,
+            "text": "260",
+            "value": "260"
+          }
+        ],
+        "query": "260",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "0",
+          "value": "0"
+        },
+        "hide": 0,
+        "label": "SOC >=",
+        "name": "filter_soc_from",
+        "options": [
+          {
+            "selected": true,
+            "text": "0",
+            "value": "0"
+          }
+        ],
+        "query": "0",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "100",
+          "value": "100"
+        },
+        "hide": 0,
+        "label": "SOC <=",
+        "name": "filter_soc_to",
+        "options": [
+          {
+            "selected": true,
+            "text": "100",
+            "value": "100"
+          }
+        ],
+        "query": "100",
+        "skipUrlSync": false,
+        "type": "textbox"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1M",
+    "to": "now"
+  },
+  "timepicker": {
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "充电详情Charging Curve Stats",
+  "uid": "chongdianxiangqing",
+  "version": 8,
+  "weekStart": ""
+}
